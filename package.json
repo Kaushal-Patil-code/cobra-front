@@ -1,0 +1,22 @@
+{
+  "name": "cobra-frontend-next",
+  "private": true,
+  "version": "0.1.0",
+  "description": "COBRA — OI Confirmation Dashboard frontend (Next.js App Router). Faithful page-by-page port of the Vite + React app in ../frontend.",
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "lint": "next lint",
+    "postinstall": "node scripts/setup-bin.js"
+  },
+  "dependencies": {
+    "next": "^14.2.15",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.15"
+  }
+}
