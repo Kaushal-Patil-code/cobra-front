@@ -1032,3 +1032,80 @@ body { transition: background-color 0.2s ease, color 0.2s ease; }
   border: 1px solid var(--down);
   background: var(--break-bg);
 }
+
+/* ── v3.1: ACTION line, spot-distance, strength, paired Aligned/Divergent ──── */
+
+/* The big decision verb (headline of each side card). */
+.action-banner {
+  margin: 4px 0 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.action-verb { font-size: 22px; font-weight: 800; letter-spacing: 0.5px; }
+.action-diagnosis { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.04em; }
+.action-meaning { margin: 4px 0 0; font-size: 13px; color: var(--text-dim); }
+.act-fade { background: var(--hold-bg); border-color: var(--hold); }
+.act-fade .action-verb { color: var(--hold); }
+.act-dont { background: var(--break-bg); border-color: var(--break); }
+.act-dont .action-verb { color: var(--break); }
+.act-wait { background: var(--warn-bg); border-color: var(--warn); }
+.act-wait .action-verb { color: var(--warn); }
+.agree-inline.agree-aligned { color: var(--hold); }
+.agree-inline.agree-divergent { color: var(--warn); }
+
+/* spot-to-wall distance chip in the card title. */
+.spot-dist {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  margin-left: 8px;
+}
+
+/* Wall strength chips (size, not change). */
+.strength-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.strength-chip {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.03em;
+  padding: 2px 9px; border-radius: 999px; border: 1px solid var(--border);
+  background: var(--bg-elev2); color: var(--text-dim);
+}
+.strength-na { opacity: 0.6; }
+.strength-s1, .strength-s2 { color: var(--text-dim); border-color: var(--border); }   /* thin → skip */
+.strength-s3 { color: var(--warn); border-color: var(--warn); background: var(--warn-bg); }
+.strength-s4, .strength-s5 { color: var(--hold); border-color: var(--hold); background: var(--hold-bg); }  /* dominant */
+
+/* Paired Nifty↔Sensex table. */
+.paired-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.paired-grouphead th {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-faint); text-align: left; padding: 6px 8px 2px;
+  border-bottom: 1px solid var(--border);
+}
+.paired-grouphead th:nth-child(2) { border-left: 1px solid var(--border); }
+.paired-subhead th {
+  font-size: 11px; color: var(--text-faint); font-weight: 500;
+  text-align: left; padding: 2px 8px 6px; border-bottom: 1px solid var(--border);
+}
+.paired-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.paired-table .row-wall { background: var(--accent-soft); font-weight: 600; }
+.paired-table .col-strike { font-variant-numeric: tabular-nums; }
+.paired-table .col-delta { font-variant-numeric: tabular-nums; }
+.paired-table .col-oi { font-variant-numeric: tabular-nums; color: var(--text-dim); }
+.paired-table .col-delta.dir-up { color: var(--up); }
+.paired-table .col-delta.dir-down { color: var(--down); }
+.paired-table .col-delta.dir-flat { color: var(--text-faint); }
+.col-agree { font-weight: 700; font-size: 11px; letter-spacing: 0.04em; }
+.agree-aligned { color: var(--hold); }
+.agree-divergent { color: var(--warn); }
+.agree-none { color: var(--text-faint); }
+
+/* window-toggle help affordance */
+.window-help { font-size: 11px; color: var(--text-faint); cursor: help; }
+.dte-idx { font-weight: 700; }
+.dte-dte { color: var(--text-faint); }
+
+.ratio-note { color: var(--text-faint); font-weight: 400; font-variant-numeric: tabular-nums; }

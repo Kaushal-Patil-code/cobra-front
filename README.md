@@ -50,20 +50,21 @@ the original.
 
 ```bash
 npm i
-npx next dev -p 3001     # http://localhost:3001
+npm run dev     # http://localhost:3001
 ```
 
-Point at a running backend with `COBRA_BACKEND=http://localhost:8000 npx next dev -p 3001`.
+Point at a running backend with `COBRA_BACKEND=http://localhost:8001 npm run dev`.
 
-> This drive is exFAT (no symlinks), so `.npmrc` sets `bin-links=false` — a plain
-> `npm i` works, and a `postinstall` hook (`scripts/setup-bin.js`) writes a
-> regular-file `node_modules/.bin/next` wrapper so `npx next …` finds the local
-> Next 14 instead of downloading one.
+> This drive is exFAT (no symlinks), so `.npmrc` sets `bin-links=false` (a plain
+> `npm i` then works without an `EPERM symlink` error). The npm scripts invoke
+> Next via `node node_modules/next/dist/bin/next …` **directly**, so they never
+> rely on the `node_modules/.bin` symlinks — identical behaviour on exFAT and on
+> Vercel's native FS.
 
 ## Build
 
 ```bash
-npx next build && npx next start -p 3001
+npm run build && npm run start
 ```
 
 ## Deploy to Vercel

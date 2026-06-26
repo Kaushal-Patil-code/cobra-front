@@ -1,43 +1,45 @@
-// Expiry banner (v3 §4). Shows both DTEs + the expiry.label. v3 runs all 5 days:
-// a 0-DTE index is tagged EXPIRY/PIN (not suppressed). Sensex data missing →
-// NIFTY-ONLY. 1-DTE → a subtle "near-expiry, low weight" tag.
+// Expiry banner (v3 §4). Shows each index's NEAREST EXPIRY DATE + DTE. v3 runs
+// all 5 days: a 0-DTE index is tagged EXPIRY/PIN (settlement, not a breakout);
+// Sensex data missing → NIFTY-ONLY. (Nifty expires Tue, Sensex Thu — they're
+// never at the same DTE, hence both dates.)
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+}
+
+function ExpiryChip({ name, idx, pin }) {
+  if (!idx) return <span className="dte-chip">{name} · n/a</span>;
+  return (
+    <span className="dte-chip">
+      <span className="dte-idx">{name}</span> exp {fmtDate(idx.expiry)}
+      <span className="dte-dte"> · DTE {idx.dte}</span>
+      {pin && <span className="pin-badge" title="0-DTE — walls pin (settlement)">PIN</span>}
+    </span>
+  );
+}
 
 export default function ExpiryBanner({ expiry }) {
   if (!expiry) return null;
-
-  const { nifty, sensex, sensex_missing, nifty_pin, sensex_pin, low_weight, label } = expiry;
-  const dteN = nifty ? nifty.dte : null;
-  const dteS = sensex ? sensex.dte : null;
+  const { nifty, sensex, sensex_missing, nifty_pin, sensex_pin } = expiry;
   const pinned = nifty_pin || sensex_pin;
 
   return (
     <div className={`expiry-banner ${pinned ? 'pinned' : ''} ${sensex_missing ? 'suppressed' : ''}`}>
       <div className="expiry-dtes">
-        <span className="dte-chip dte-nifty">
-          NIFTY · DTE {dteN != null ? dteN : '—'}
-          {nifty && nifty.expiry ? ` (${nifty.expiry})` : ''}
-          {nifty_pin && <span className="pin-badge" title="0-DTE — walls pin">PIN</span>}
-        </span>
-        <span className="dte-chip dte-sensex">
-          {sensex
-            ? `SENSEX · DTE ${dteS != null ? dteS : '—'} (${sensex.expiry})`
-            : 'SENSEX · n/a'}
-          {sensex_pin && <span className="pin-badge" title="0-DTE — walls pin">PIN</span>}
-        </span>
+        <ExpiryChip name="NIFTY" idx={nifty} pin={nifty_pin} />
+        <ExpiryChip name="SENSEX" idx={sensex_missing ? null : sensex} pin={sensex_pin} />
       </div>
 
-      {pinned ? (
-        <span className="expiry-flag flag-pinned" title="0-DTE: unwind = settlement, read as PIN/HOLD">
-          EXPIRY/PIN — settlement on the 0-DTE index, no false breakouts
+      {pinned && (
+        <span className="expiry-flag flag-pinned" title="0-DTE: an OI unwind is settlement, read as PIN/HOLD">
+          EXPIRY/PIN — no false breakouts on the 0-DTE index
         </span>
-      ) : sensex_missing ? (
-        <span className="expiry-flag flag-suppressed">NIFTY-ONLY — Sensex unavailable</span>
-      ) : (
-        <span className="expiry-label">{label}</span>
       )}
-
-      {low_weight && !pinned && (
-        <span className="expiry-flag flag-lowweight">near-expiry, low weight</span>
+      {sensex_missing && !pinned && (
+        <span className="expiry-flag flag-suppressed">NIFTY-ONLY — Sensex unavailable</span>
       )}
     </div>
   );

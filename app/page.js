@@ -76,6 +76,9 @@ export default function LivePage() {
 
   const sides = state ? orderSides(state.sides) : [];
   const rangeBroken = (state && state.range_broken) || [];
+  // Live spot per index (for spot-to-wall distance + the Nifty↔Sensex ratio).
+  const spots = {};
+  ((state && state.metrics) || []).forEach((m) => { spots[m.index_name] = m.spot; });
 
   return (
     <>
@@ -122,7 +125,12 @@ export default function LivePage() {
         )}
 
         {sides.map((side) => (
-          <SideCard key={`${side.side}-${side.option_type}`} side={side} />
+          <SideCard
+            key={`${side.side}-${side.option_type}`}
+            side={side}
+            spots={spots}
+            window={state.window_minutes}
+          />
         ))}
       </main>
     </>

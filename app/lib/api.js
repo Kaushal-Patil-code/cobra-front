@@ -6,7 +6,9 @@
 // `source: 'error'`, so the UI shows an explicit "unavailable" state instead of
 // masking an outage with fake data.
 
-const REQUEST_TIMEOUT_MS = 8000;
+// Generous so a Render free cold start / slow first DB connection surfaces the
+// real response instead of aborting early as a "timeout".
+const REQUEST_TIMEOUT_MS = 25000;
 
 function withTimeout(ms) {
   const controller = new AbortController();
