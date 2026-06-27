@@ -7,8 +7,6 @@
 import PairedWalls, { agreement } from './PairedWalls.jsx';
 import StrengthChip from './StrengthChip.jsx';
 
-const DEFAULT_RATIO = 3.2; // fallback only; the live ratio comes from the two spots
-
 // ACTION → color class.
 function actionClass(action) {
   const a = (action || '').toUpperCase();
@@ -33,18 +31,19 @@ function spotDistance(side, spot, wall) {
     : `spot ${gap} pts BELOW floor (!)`;
 }
 
-export default function SideCard({ side, spots = {}, window: win }) {
+export default function SideCard({ side, spots = {}, liveRatio, window: win }) {
   if (!side) return null;
 
   const {
     side: name, option_type, wall_strike, verdict, conviction, action, meaning,
-    tag, nifty, sensex, suppressed,
+    tag, nifty, sensex, suppressed, paired,
   } = side;
 
   const niftyOnly = suppressed || !sensex;
   const niftySpot = spots.NIFTY;
-  const sensexSpot = spots.SENSEX;
-  const ratio = niftySpot && sensexSpot ? sensexSpot / niftySpot : DEFAULT_RATIO;
+  // The live Sensex/Nifty ratio is the exact value the backend paired with; show
+  // "—" (omit the × note) when it's unavailable — never a hardcoded fallback.
+  const ratio = liveRatio ?? null;
   const dist = spotDistance(name, niftySpot, wall_strike);
   const wallAgree = nifty && sensex ? agreement(nifty.wall, sensex.wall) : null;
   const niftyMigration = nifty && nifty.migration;
@@ -88,7 +87,7 @@ export default function SideCard({ side, spots = {}, window: win }) {
         </div>
       )}
 
-      <PairedWalls nifty={nifty} sensex={sensex} ratio={ratio} window={win} optionType={option_type} />
+      <PairedWalls paired={paired} ratio={ratio} window={win} optionType={option_type} />
     </section>
   );
 }

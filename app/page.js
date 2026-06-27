@@ -129,6 +129,7 @@ export default function LivePage() {
             key={`${side.side}-${side.option_type}`}
             side={side}
             spots={spots}
+            liveRatio={state.live_ratio}
             window={state.window_minutes}
           />
         ))}

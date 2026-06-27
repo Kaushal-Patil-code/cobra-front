@@ -1,10 +1,13 @@
-// Paired-by-level wall table (v3). Instead of two separate index blocks, each row
-// is a NIFTY strike next to the SENSEX strike closest to its level-equivalent
-// (Nifty × the LIVE ratio = sensex_spot / nifty_spot, ~3.20 — not hardcoded), with
-// an ALIGNED / DIVERGENT column so you see at a glance whether the two indices
-// agree. Shows Δ% (window) AND absolute OI for each leg.
+// Paired-by-level wall table (v3 item 1). Each row is a NIFTY rung beside the
+// SENSEX rung closest to its level-equivalent (Nifty × the LIVE ratio =
+// sensex_spot / nifty_spot, ~3.20 — not hardcoded), with an ALIGNED / DIVERGENT
+// column. The rows, the level match, and the agreement are computed by the backend
+// (compute/pairing.py); this component just renders `side.paired`. Shows Δ% (window)
+// AND absolute OI for each leg. Outer Nifty rungs with no Sensex strike at their
+// level show "—" (the two ladders don't fully overlap).
 
-// Both legs moving the same way = ALIGNED; opposite = DIVERGENT; one flat = —.
+// Wall-banner agreement (computed off the two wall signals in SideCard) — both legs
+// moving the same way = ALIGNED, opposite = DIVERGENT, one flat/missing = —.
 export function agreement(a, b) {
   if (!a || !b) return null;
   const moving = (d) => d === 'up' || d === 'down';
@@ -28,30 +31,6 @@ export function fmtOI(v) {
 
 const dirClass = (d) => (d === 'up' ? 'dir-up' : d === 'down' ? 'dir-down' : 'dir-flat');
 const dirArrow = (d) => (d === 'up' ? '↑' : d === 'down' ? '↓' : '–');
-
-// Rank each index's legs by offset-from-wall (… -1 = one rung below the wall,
-// 0 = the wall, +1 = one above …). Pairing on that offset guarantees wall↔wall
-// (the cross-check the verdict is built on) and below↔below / above↔above — which
-// is robust even though the two walls sit at different absolute levels. (True
-// level-mapping across the FULL ladder needs all 8 rungs in /state; that lands
-// with the dynamic-wall pass.)
-function ranked(wallSignal) {
-  if (!wallSignal) return new Map();
-  const ls = [wallSignal.wall, ...(wallSignal.neighbors || [])].sort((a, b) => b.strike - a.strike);
-  const wi = Math.max(0, ls.findIndex((l) => l.is_wall));
-  return new Map(ls.map((l, i) => [i - wi, l]));
-}
-
-function pairByOffset(nifty, sensex) {
-  const n = ranked(nifty);
-  const s = ranked(sensex);
-  const offsets = [...new Set([...n.keys(), ...s.keys()])].sort((a, b) => b - a);
-  return offsets.map((off) => {
-    const nn = n.get(off) || null;
-    const ss = s.get(off) || null;
-    return { nifty: nn, sensex: ss, agree: agreement(nn, ss) };
-  });
-}
 
 function Leg({ sig }) {
   if (!sig) {
@@ -77,8 +56,8 @@ function Leg({ sig }) {
   );
 }
 
-export default function PairedWalls({ nifty, sensex, ratio, window: win, optionType }) {
-  const pairs = pairByOffset(nifty, sensex);
+export default function PairedWalls({ paired, ratio, window: win, optionType }) {
+  const rows = paired || [];
   const ratioStr = ratio ? `× ${ratio.toFixed(3)}` : null;
   return (
     <table className="paired-table">
@@ -98,8 +77,8 @@ export default function PairedWalls({ nifty, sensex, ratio, window: win, optionT
         </tr>
       </thead>
       <tbody>
-        {pairs.map((p, i) => (
-          <tr key={i} className={(p.nifty?.is_wall || p.sensex?.is_wall) ? 'row-wall' : 'row-neighbor'}>
+        {rows.map((p, i) => (
+          <tr key={i} className={p.is_wall ? 'row-wall' : 'row-neighbor'}>
             <Leg sig={p.nifty} />
             <Leg sig={p.sensex} />
             <td className={`col-agree agree-${(p.agree || 'none').toLowerCase()}`}>
@@ -107,7 +86,7 @@ export default function PairedWalls({ nifty, sensex, ratio, window: win, optionT
             </td>
           </tr>
         ))}
-        {pairs.length === 0 && (
+        {rows.length === 0 && (
           <tr><td colSpan={7} className="ptable-empty">No wall data.</td></tr>
         )}
       </tbody>
