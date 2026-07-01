@@ -56,7 +56,7 @@ function Leg({ sig }) {
   );
 }
 
-export default function PairedWalls({ paired, ratio, window: win, optionType }) {
+export default function PairedWalls({ paired, callout, ratio, window: win, optionType }) {
   const rows = paired || [];
   const ratioStr = ratio ? `× ${ratio.toFixed(3)}` : null;
   return (
@@ -86,6 +86,15 @@ export default function PairedWalls({ paired, ratio, window: win, optionType }) 
             </td>
           </tr>
         ))}
+        {callout && (
+          <tr className="row-callout" title="wall detected outside the visible 8 rungs">
+            <Leg sig={callout.nifty} />
+            <Leg sig={callout.sensex} />
+            <td className={`col-agree agree-${(callout.agree || 'none').toLowerCase()}`}>
+              {callout.agree || '—'}
+            </td>
+          </tr>
+        )}
         {rows.length === 0 && (
           <tr><td colSpan={7} className="ptable-empty">No wall data.</td></tr>
         )}

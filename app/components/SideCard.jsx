@@ -36,7 +36,7 @@ export default function SideCard({ side, spots = {}, liveRatio, window: win }) {
 
   const {
     side: name, option_type, wall_strike, verdict, conviction, action, meaning,
-    tag, nifty, sensex, suppressed, paired,
+    tag, nifty, sensex, suppressed, paired, wall_callout,
   } = side;
 
   const niftyOnly = suppressed || !sensex;
@@ -57,6 +57,11 @@ export default function SideCard({ side, spots = {}, liveRatio, window: win }) {
           <span className="zone-type">{option_type}</span>
           {wall_strike != null && <span className="wall-strike-tag">wall {wall_strike}</span>}
           {dist && <span className="spot-dist">{dist}</span>}
+          {nifty?.broken_level != null && (
+            <span className="broken-badge" title="spot cleared this former wall">
+              ⚠ BROKEN — cleared {nifty.broken_level}
+            </span>
+          )}
         </h2>
         <div className="zone-tags">
           {tag && <span className="pin-tag" title="0-DTE — settlement, read as PIN/HOLD">{tag}</span>}
@@ -87,7 +92,7 @@ export default function SideCard({ side, spots = {}, liveRatio, window: win }) {
         </div>
       )}
 
-      <PairedWalls paired={paired} ratio={ratio} window={win} optionType={option_type} />
+      <PairedWalls paired={paired} callout={wall_callout} ratio={ratio} window={win} optionType={option_type} />
     </section>
   );
 }
