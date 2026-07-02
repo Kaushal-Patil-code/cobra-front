@@ -6,6 +6,8 @@
 // AND absolute OI for each leg. Outer Nifty rungs with no Sensex strike at their
 // level show "—" (the two ladders don't fully overlap).
 
+import { directionLabel, plainAgree } from '../lib/labels.js';
+
 // Wall-banner agreement (computed off the two wall signals in SideCard) — both legs
 // moving the same way = ALIGNED, opposite = DIVERGENT, one flat/missing = —.
 export function agreement(a, b) {
@@ -48,7 +50,10 @@ function Leg({ sig }) {
         {sig.strike}
         {sig.is_wall && <span className="role-tag tag-wall">WALL</span>}
       </td>
-      <td className={`col-delta ${dirClass(sig.direction)}`}>
+      <td
+        className={`col-delta ${dirClass(sig.direction)}`}
+        title={directionLabel(sig.direction) + (sig.streak >= 2 ? ` · ${sig.streak} in a row` : '')}
+      >
         {dirArrow(sig.direction)} {fmtPct(sig.change_pct)}
       </td>
       <td className="col-oi">{fmtOI(sig.oi_latest)}</td>
@@ -82,7 +87,7 @@ export default function PairedWalls({ paired, callout, ratio, window: win, optio
             <Leg sig={p.nifty} />
             <Leg sig={p.sensex} />
             <td className={`col-agree agree-${(p.agree || 'none').toLowerCase()}`}>
-              {p.agree || '—'}
+              {plainAgree(p.agree) || '—'}
             </td>
           </tr>
         ))}
@@ -91,7 +96,7 @@ export default function PairedWalls({ paired, callout, ratio, window: win, optio
             <Leg sig={callout.nifty} />
             <Leg sig={callout.sensex} />
             <td className={`col-agree agree-${(callout.agree || 'none').toLowerCase()}`}>
-              {callout.agree || '—'}
+              {plainAgree(callout.agree) || '—'}
             </td>
           </tr>
         )}

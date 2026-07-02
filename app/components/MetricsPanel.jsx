@@ -2,6 +2,8 @@
 // + ATM, for NIFTY and SENSEX. Max-pain is surfaced prominently because it's the
 // pin target on the 0-DTE index (Rule 33: max-pain dominates on expiry).
 
+import { pcrLabel } from '../lib/labels.js';
+
 function fmtNum(v) {
   if (v == null) return '—';
   return typeof v === 'number' ? v.toLocaleString('en-IN') : String(v);
@@ -14,12 +16,14 @@ function MetricCard({ m }) {
       <div className="metric-index">{m.index_name}</div>
       <div className="metric-grid">
         <div className="metric-cell">
-          <span className="metric-label">Max-pain</span>
-          <span className="metric-value metric-maxpain">{fmtNum(m.max_pain)}</span>
+          <span className="metric-label">Pin magnet</span>
+          <span className="metric-value metric-maxpain" title="max-pain — where price is drawn">
+            {fmtNum(m.max_pain)}
+          </span>
         </div>
         <div className="metric-cell">
           <span className="metric-label">PCR</span>
-          <span className="metric-value">{m.pcr == null ? '—' : m.pcr.toFixed(2)}</span>
+          <span className="metric-value">{pcrLabel(m.pcr)}</span>
         </div>
         <div className="metric-cell">
           <span className="metric-label">Spot</span>

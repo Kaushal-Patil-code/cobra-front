@@ -4,14 +4,14 @@
 
 export default function StrengthChip({ value, dominance, label }) {
   if (value == null) {
-    return label ? <span className="strength-chip strength-na">{label} STR —</span> : null;
+    return label ? <span className="strength-chip strength-na">{label} WALL SIZE —</span> : null;
   }
   const title =
-    `${label ? label + ' ' : ''}wall strength ${value}/5` +
+    `${label ? label + ' ' : ''}wall size ${value}/5 (dominance)` +
     (dominance != null ? ` · ${dominance}× the ladder median OI` : '');
   return (
     <span className={`strength-chip strength-s${value}`} title={title}>
-      {label ? `${label} ` : ''}STR {value}/5
+      {label ? `${label} ` : ''}WALL SIZE {value}/5
     </span>
   );
 }

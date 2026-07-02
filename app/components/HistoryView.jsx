@@ -76,10 +76,13 @@ export default function HistoryView({ history }) {
   const [side, setSide] = useState('ALL');
 
   const buckets = (history && history.weekday_buckets) || [];
-  const allRecords = (history && history.records) || [];
 
-  // Newest-first, then apply the side filter.
+  // Newest-first, then apply the side filter. `allRecords` is derived INSIDE the
+  // callback so the `|| []` fallback (a fresh array on every render while records
+  // are absent) can't churn the memo deps — recompute keys off the stable `history`
+  // prop + `side` instead.
   const rows = useMemo(() => {
+    const allRecords = (history && history.records) || [];
     const sorted = [...allRecords].sort((a, b) => {
       const ta = new Date(a.ts).getTime();
       const tb = new Date(b.ts).getTime();
@@ -88,7 +91,7 @@ export default function HistoryView({ history }) {
     });
     if (side === 'ALL') return sorted;
     return sorted.filter((r) => r.side === side);
-  }, [allRecords, side]);
+  }, [history, side]);
 
   const range = history && (history.start || history.end)
     ? `${history.start || '…'} → ${history.end || '…'}`
@@ -173,7 +176,14 @@ export default function HistoryView({ history }) {
                       <span className="log-role">{r.side}</span>
                       <span className="log-optype">{r.option_type}</span>
                       {r.tag && (
-                        <span className="pin-tag" title="0-DTE — settlement / pin">{r.tag}</span>
+                        <span
+                          className="pin-tag"
+                          title={r.tag === 'NEAR-EXPIRY'
+                            ? '1-DTE — wall matured near expiry (stronger hold-trust)'
+                            : '0-DTE — settlement / pin'}
+                        >
+                          {r.tag}
+                        </span>
                       )}
                       {r.suppressed && (
                         <span className="suppressed-tag" title="NIFTY-only (Sensex data missing)">

@@ -53,6 +53,7 @@ const METRIC_COLS = [
   { key: 'pcr', label: 'PCR', mono: true, align: 'right', render: fixed2 },
   { key: 'call_oi', label: 'Call OI', mono: true, align: 'right', render: num },
   { key: 'put_oi', label: 'Put OI', mono: true, align: 'right', render: num },
+  { key: 'vix', label: 'VIX', mono: true, align: 'right', render: fixed2 },
 ];
 const LADDER_COLS = [
   { key: 'trading_date', label: 'Date', mono: true, render: dateOnly },

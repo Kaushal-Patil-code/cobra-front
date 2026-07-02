@@ -1038,6 +1038,40 @@ body { transition: background-color 0.2s ease, color 0.2s ease; }
 .act-wait .action-verb { color: var(--warn); }
 .agree-inline.agree-aligned { color: var(--hold); }
 .agree-inline.agree-divergent { color: var(--warn); }
+/* The one plain instruction (§5.1) — the primary read of the card. */
+.action-line { margin: 6px 0 0; font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.35; }
+/* WAIT's reason, inline with the verb (§5.2) — not upper-cased like the verb. */
+.wait-reason { font-size: 13px; font-weight: 600; color: var(--warn); margin-left: 8px; letter-spacing: 0; }
+
+/* §5.4 proximity chip in the card title — a fade only exists near the wall. */
+.prox-chip {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.03em; margin-left: 8px;
+  padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--border); color: var(--text-dim); background: var(--bg-elev2);
+}
+.prox-at { color: var(--hold); border-color: var(--hold); background: var(--hold-bg); }
+.prox-approaching { color: var(--warn); border-color: var(--warn); background: var(--warn-bg); }
+.prox-far { color: var(--text-dim); }
+
+/* §1/§4: near-expiry = MORE trust (green), distinct from the amber 0-DTE pin tag. */
+.near-expiry-tag { color: var(--hold); border-color: var(--hold); background: var(--hold-bg); }
+
+/* §5.5 warm-up, §5.6 expiry pin, §5.3 VIX — full-width status lines above the cards. */
+.warmup-banner {
+  margin: 10px 0; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 600;
+  border: 1px dashed var(--border); background: var(--bg-elev2); color: var(--text-dim);
+}
+.expiry-pin-note {
+  margin: 10px 0; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;
+  border: 1px solid var(--warn); background: var(--warn-bg); color: var(--warn);
+}
+.vix-line {
+  margin: 10px 0; padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 700;
+  border: 1px solid var(--border);
+}
+.vix-calm { color: var(--hold); border-color: var(--hold); background: var(--hold-bg); }
+.vix-normal { color: var(--text-dim); background: var(--bg-elev2); }
+.vix-spiking { color: var(--break); border-color: var(--break); background: var(--break-bg); }
 
 /* spot-to-wall distance chip in the card title. */
 .spot-dist {
@@ -1254,4 +1288,4 @@ body { transition: background-color 0.2s ease, color 0.2s ease; }
 .opc-foot { text-align: center; color: var(--text-faint); font-size: 10px; font-family: var(--mono); margin-top: 14px; letter-spacing: 0.5px; }
 
 .row-callout { background: #fff7ed; outline: 1px solid #fb923c; }
-.broken-badge { margin-left: .5rem; color: #b91c1c; font-weight: 600; font-size: .8rem; }
+.broken-badge { margin-left: .5rem; color: var(--break); font-weight: 600; font-size: .8rem; }

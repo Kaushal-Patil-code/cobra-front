@@ -3,6 +3,8 @@
 // Sensex data missing → NIFTY-ONLY. (Nifty expires Tue, Sensex Thu — they're
 // never at the same DTE, hence both dates.)
 
+import { dteLabel } from '../lib/labels.js';
+
 function fmtDate(iso) {
   if (!iso) return '—';
   const d = new Date(iso);
@@ -15,7 +17,7 @@ function ExpiryChip({ name, idx, pin }) {
   return (
     <span className="dte-chip">
       <span className="dte-idx">{name}</span> exp {fmtDate(idx.expiry)}
-      <span className="dte-dte"> · DTE {idx.dte}</span>
+      <span className="dte-dte"> · {dteLabel(idx.dte)}</span>
       {pin && <span className="pin-badge" title="0-DTE — walls pin (settlement)">PIN</span>}
     </span>
   );

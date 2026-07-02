@@ -80,9 +80,6 @@ export default function LivePage() {
 
   const sides = state ? orderSides(state.sides) : [];
   const rangeBroken = (state && state.range_broken) || [];
-  // Live spot per index (for spot-to-wall distance + the Nifty↔Sensex ratio).
-  const spots = {};
-  ((state && state.metrics) || []).forEach((m) => { spots[m.index_name] = m.spot; });
 
   return (
     <>
@@ -109,11 +106,23 @@ export default function LivePage() {
 
       <OptionCalculator open={calcOpen} onClose={() => setCalcOpen(false)} />
 
+      {state && state.warmup && (
+        <div className="warmup-banner" role="status">⏳ {state.warmup}</div>
+      )}
+
       {state && <ExpiryBanner expiry={state.expiry} />}
+
+      {state && state.expiry_pin_note && (
+        <div className="expiry-pin-note" role="note">📌 {state.expiry_pin_note}</div>
+      )}
+
+      {state && state.vix_line && (
+        <div className={`vix-line vix-${state.vix_regime || 'normal'}`} role="status">{state.vix_line}</div>
+      )}
 
       {rangeBroken.length > 0 && (
         <div className="range-broken-banner" role="alert">
-          RANGE BROKEN — {rangeBroken.join(' & ')} spot left the ladder · likely trend day, stop fading
+          {rangeBroken.join(' & ')}: left the range — trending, stop fading
         </div>
       )}
 
@@ -139,7 +148,6 @@ export default function LivePage() {
           <SideCard
             key={`${side.side}-${side.option_type}`}
             side={side}
-            spots={spots}
             liveRatio={state.live_ratio}
             window={state.window_minutes}
           />
